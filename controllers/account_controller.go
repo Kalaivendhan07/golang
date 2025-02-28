@@ -11,6 +11,7 @@ import (
 type BalanceSheet struct {
 	ID              int    `json:"id"`
 	ExpenseCategory string `json:"expense_category"`
+	Type            string  `json:"type"`
 	Amount          int    `json:"amount"`
 	DueDate         string `json:"due_date"`
 	Status          string `json:"status"`
@@ -28,7 +29,7 @@ func GetBalanceSheet(w http.ResponseWriter, r *http.Request) {
 	var balanceSheets []BalanceSheet
 
 
-	rows, err := config.DB.Query("SELECT id, expense_category, Amount, due_date, status, payment_method, entered_by, entered_date, updated_by, updated_date FROM balance_sheet")
+	rows, err := config.DB.Query("SELECT id, expense_category,type, Amount, due_date, status, payment_method, entered_by, entered_date, updated_by, updated_date FROM balance_sheet")
 	if err != nil {
 		http.Error(w, "Database query error", http.StatusInternalServerError)
 		return
@@ -37,7 +38,7 @@ func GetBalanceSheet(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var bs BalanceSheet
-		err := rows.Scan(&bs.ID, &bs.ExpenseCategory, &bs.Amount, &bs.DueDate, &bs.Status, &bs.PaymentMethod, &bs.EnteredBy, &bs.EnteredDate, &bs.UpdatedBy, &bs.UpdatedDate)
+		err := rows.Scan(&bs.ID, &bs.ExpenseCategory,&bs.Type, &bs.Amount, &bs.DueDate, &bs.Status, &bs.PaymentMethod, &bs.EnteredBy, &bs.EnteredDate, &bs.UpdatedBy, &bs.UpdatedDate)
 		if err != nil {
 			http.Error(w, "Error scanning data", http.StatusInternalServerError)
 			return
