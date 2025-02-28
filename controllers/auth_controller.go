@@ -15,7 +15,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	// Check if user already exists
 	var count int
 	err := config.DB.QueryRow("SELECT COUNT(*) FROM users WHERE email = ?", user.Email).Scan(&count)
 	if err != nil {
@@ -28,11 +27,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Hash password
 	hashedPassword, _ := utils.HashPassword(user.Password)
 	user.Password = hashedPassword
 
-	// Insert new user
+
 	_, err = config.DB.Exec("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", user.Username, user.Email, user.Password)
 	if err != nil {
 		http.Error(w, "Error creating user", http.StatusInternalServerError)
@@ -65,8 +63,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 
-
-// UpdateUser updates user details
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	json.NewDecoder(r.Body).Decode(&user)
