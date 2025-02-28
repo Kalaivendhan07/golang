@@ -33,6 +33,8 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/api/FetchMetricsData", controllers.FetchMetricsData).Methods("GET")
 
 	// fetch sales
+	r.HandleFunc("/api/GetAllSales", controllers.GetAllSales).Methods("GET")
+
 	
 	return r
 }
