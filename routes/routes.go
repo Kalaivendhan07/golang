@@ -23,5 +23,11 @@ func SetupRoutes() *mux.Router {
 
 	r.HandleFunc("/api/salesKPI1", controllers.GetYearToDateProfit).Methods("GET")
 
+	r.HandleFunc("/api/topFiveProduct", controllers.GetTopFiveProducts).Methods("GET")
+
+	r.HandleFunc("/api/GetExpensesVsSales", controllers.GetExpensesVsSales).Methods("GET")
+
+	r.HandleFunc("/api/GetKPIData3", controllers.GetKPIData3).Methods("GET")
+
 	return r
 }
