@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	// "fmt"
+	"fmt"
 	"golang/config"
 	"golang/models"
 	"golang/utils"
@@ -11,32 +11,41 @@ import (
 
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-	json.NewDecoder(r.Body).Decode(&user)
+
+	fmt.Println("in Controller...")
+
+	var registration models.Registration
+
+	json.NewDecoder(r.Body).Decode(&registration)
+
 
 	var count int
-	err := config.DB.QueryRow("SELECT COUNT(*) FROM users WHERE email = ?", user.Email).Scan(&count)
+	err := config.DB.QueryRow("SELECT COUNT(*) FROM users WHERE email = ?", registration.Email).Scan(&count)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
 	}
 
 	if count > 0 {
-		json.NewEncoder(w).Encode(map[string]string{"error": "User already exists"})
+		// json.NewEncoder(w).Encode(map[string]string{"error": "User already exists"})
+		json.NewEncoder(w).Encode(map[string]string{"status":"0","message": "User already exists"})
 		return
 	}
 
-	hashedPassword, _ := utils.HashPassword(user.Password)
-	user.Password = hashedPassword
+	hashedPassword, _ := utils.HashPassword(registration.Password)
+	registration.Password = hashedPassword
 
+	_, err = config.DB.Exec("INSERT INTO users (name, email, password,address,gender,pincode,date_of_birth,city,phone,state,status,entered_by,updated_by,user_category,entered_date_time,updated_date_time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",registration.Name, registration.Email, registration.Password,registration.Address,registration.Gender,registration.Pincode,registration.DateOfBirth,registration.City,registration.Phone,registration.State,registration.Status,"1","1","owner","now()","now()")
 
-	_, err = config.DB.Exec("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", user.Username, user.Email, user.Password)
+	// fmt.Println("INSERT INTO users (name, email, password,address,gender,pincode,date_of_birth,city,phone,state,status,entered_by,updated_by,user_category,entered_date_time,updated_date_time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", registration.Name, registration.Email, registration.Password,registration.Address,registration.Gender,registration.Pincode,registration.DateOfBirth,registration.City,registration.Phone,registration.State,registration.Status,"1","1","owner","now()","now()")
+	
 	if err != nil {
-		http.Error(w, "Error creating user", http.StatusInternalServerError)
+		// http.Error(w, "Error creating user", http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"status":"0","message": "failed user creation"})
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{"message": "User registered successfully"})
+	json.NewEncoder(w).Encode(map[string]string{"status":"1","message": "User registered successfully"})
 }
 
 
@@ -44,54 +53,19 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	row := config.DB.QueryRow("SELECT id, password FROM users WHERE email = ?", user.Email)
 	var hashedPassword string
-	err := row.Scan(&user.ID, &hashedPassword)
+	err := config.DB.QueryRow("SELECT password FROM users WHERE email = ?", user.Email).Scan(&hashedPassword)
 	if err != nil {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"status": "0", "msg": "Email or Password Incorrect"})
 		return
 	}
 
 	if !utils.CheckPasswordHash(user.Password, hashedPassword) {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"status": "0", "msg": "Email or Password Incorrect"})
 		return
 	}
 
 	token, _ := utils.GenerateJWT(user.Email)
-	json.NewEncoder(w).Encode(map[string]string{"token": token})
+	json.NewEncoder(w).Encode(map[string]string{"token": token, "status": "1", "msg": "Login Successfully"})
 }
 
-
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-	json.NewDecoder(r.Body).Decode(&user)
-
-	// Hash new password if provided
-	if user.Password != "" {
-		hashedPassword, _ := utils.HashPassword(user.Password)
-		user.Password = hashedPassword
-	}
-
-	_, err := config.DB.Exec("UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?", 
-		user.Username, user.Email, user.Password, user.ID)
-	if err != nil {
-		http.Error(w, "Error updating user", http.StatusInternalServerError)
-		return
-	}
-
-	json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
-}
-
-
-func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-	json.NewDecoder(r.Body).Decode(&user)
-
-	_, err := config.DB.Exec("DELETE FROM users WHERE id = ?", user.ID)
-	if err != nil {
-		http.Error(w, "Error deleting user", http.StatusInternalServerError)
-		return
-	}
-
-	json.NewEncoder(w).Encode(map[string]string{"message": "User deleted successfully"})
-}
