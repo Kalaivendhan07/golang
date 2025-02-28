@@ -22,7 +22,7 @@ type ExpensesVsSalesResponse struct {
 }
 
 func GetExpensesVsSales(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Fetching Monthly Expenses vs Sales...")
+
 
 
 	rows, err := config.DB.Query(`SELECT DATE_FORMAT(s.ordered_date, '%Y-%m') AS month,COALESCE(SUM(s.total_amount), 0) AS total_sales,COALESCE(SUM(p.total_amount), 0) AS total_expenses
