@@ -38,6 +38,15 @@ func SetupRoutes() *mux.Router {
 	// fetch purchases
 	r.HandleFunc("/api/GetAllPurchases", controllers.GetAllPurchases).Methods("GET")
 
+	// add sales
+	r.HandleFunc("/api/sales/add", controllers.AddSales).Methods("POST")
+
+	// add purchases
+	r.HandleFunc("/api/purchases/add", controllers.AddPurchase).Methods("POST")
+
+	// add balacesheet
+	r.HandleFunc("/api/balance_sheet/add", controllers.AddBalanceSheetEntry).Methods("POST")
+
 	
 	return r
 }

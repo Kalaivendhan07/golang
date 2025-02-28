@@ -27,7 +27,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if count > 0 {
-		// json.NewEncoder(w).Encode(map[string]string{"error": "User already exists"})
+
 		json.NewEncoder(w).Encode(map[string]string{"status":"0","message": "User already exists"})
 		return
 	}
@@ -40,7 +40,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("INSERT INTO users (name, email, password,address,gender,pincode,date_of_birth,city,phone,state,status,entered_by,updated_by,user_category,entered_date_time,updated_date_time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", registration.Name, registration.Email, registration.Password,registration.Address,registration.Gender,registration.Pincode,registration.DateOfBirth,registration.City,registration.Phone,registration.State,registration.Status,"1","1","owner","now()","now()")
 	
 	if err != nil {
-		// http.Error(w, "Error creating user", http.StatusInternalServerError)
+
 		json.NewEncoder(w).Encode(map[string]string{"status":"0","message": "failed user creation"})
 		return
 	}

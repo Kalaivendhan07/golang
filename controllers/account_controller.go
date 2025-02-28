@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// BalanceSheet represents the structure of the balance_sheet table
+
 type BalanceSheet struct {
 	ID              int    `json:"id"`
 	ExpenseCategory string `json:"expense_category"`
@@ -56,11 +56,9 @@ func GetBalanceSheet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Set response headers
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	// Encode response in JSON format
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"status":  "1",
 		"message": "Balance sheet data fetched successfully",
