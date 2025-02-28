@@ -21,5 +21,7 @@ func SetupRoutes() *mux.Router {
 
 	r.HandleFunc("/api/account_data", controllers.GetBalanceSheet).Methods("GET")
 
+	r.HandleFunc("/api/salesKPI1", controllers.GetYearToDateProfit).Methods("GET")
+
 	return r
 }
