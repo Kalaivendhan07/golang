@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"strings"
 	"golang/utils"
-
-	// "github.com/gorilla/mux"
 )
 
 func AuthMiddleware(next http.Handler) http.Handler {

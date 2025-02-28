@@ -10,7 +10,6 @@ import (
 )
 
 
-
 func Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	json.NewDecoder(r.Body).Decode(&user)
@@ -82,6 +81,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
 }
+
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
