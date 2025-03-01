@@ -9,7 +9,6 @@ import (
 
 
 type BalanceSheet struct {
-	ID              int    `json:"id"`
 	ExpenseCategory string `json:"expense_category"`
 	Type            string  `json:"type"`
 	Amount          int    `json:"amount"`
@@ -38,7 +37,7 @@ func GetBalanceSheet(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var bs BalanceSheet
-		err := rows.Scan(&bs.ID, &bs.ExpenseCategory,&bs.Type, &bs.Amount, &bs.DueDate, &bs.Status, &bs.PaymentMethod, &bs.EnteredBy, &bs.EnteredDate, &bs.UpdatedBy, &bs.UpdatedDate)
+		err := rows.Scan(&bs.ExpenseCategory,&bs.Type, &bs.Amount, &bs.DueDate, &bs.Status, &bs.PaymentMethod, &bs.EnteredBy, &bs.EnteredDate, &bs.UpdatedBy, &bs.UpdatedDate)
 		if err != nil {
 			http.Error(w, "Error scanning data", http.StatusInternalServerError)
 			return
