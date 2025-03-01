@@ -28,7 +28,7 @@ func main() {
 		handler := c.Handler(r)
 
 	// fmt.Println("Server is running on port 8082")
-	http.ListenAndServe(":8082", handler)
-	log.Println("Server running on port 8082")
-	log.Fatal(http.ListenAndServe(":8082", r))
+	http.ListenAndServe(":8080", handler)
+	log.Println("Server running on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
